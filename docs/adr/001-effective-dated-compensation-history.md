@@ -15,3 +15,10 @@ a column read — mitigated by an index on `(employee_id, effective_from DESC)`.
 In exchange we get raise history, future-dated increases, retroactive
 corrections, and a full audit trail as properties of the schema rather than
 features we have to build.
+
+**Status:** Superseded by ADR-005
+
+**Superseded.** Clarification confirmed that current salary per employee is
+sufficient and that revision history, effective dates, and audit logs are
+deferred to a future phase. Retained here because the reasoning still describes
+the migration path in ADR-005.
