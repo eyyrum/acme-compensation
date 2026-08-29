@@ -22,24 +22,27 @@ and (2) badly but adequately; they fail completely at (3).
 
 ## In scope
 
-**Compensation records**
-- Effective-dated compensation history per employee (base, bonus, allowances)
-- Multi-currency, with normalisation to a reporting currency for comparison
-- Every change captured with effective date, reason, and actor
+**Employee records**
+- Employee ID, full name, department, job title, country, base salary, currency,
+  status (active/inactive), joining date
+- Current base salary in the employee's local currency
+- Server-paginated, filterable directory (department, country, status, search)
 
-**Employee directory**
-- Server-paginated, filterable list (department, country, level, title)
-- Employee detail with a compensation timeline
+**Multi-currency**
+- Salaries stored in native local currency
+- Seeded FX rate table normalises to USD for all aggregate views
 
-**Analytics — the questions Priya actually asks**
-| Question | Surfaced as |
+**Dashboard**
+| KPI / view | Answers |
 |---|---|
-| What do we spend on payroll? | Total annualised cost, sliced by country / department |
-| Are we paying market rate for this role here? | Median + p25/p75 by title × location |
-| Who is a retention risk? | Compa-ratio < 0.9, i.e. below their pay band midpoint |
-| Who has been overlooked? | No compensation change in > 18 months |
-| What does a raise cost? | Cost simulation for an uplift applied to a filtered cohort |
-| Where are we inconsistent? | Outliers > 2σ within a title × location cohort |
+| Total annualised payroll spend (USD) | What do we spend? |
+| Headcount, active vs inactive | How many people? |
+| Average and median pay | What is typical? |
+| Salary distribution histogram | How is pay spread? |
+| Spend and median by department | Which teams cost what? |
+| Spend and median by country | How does geography compare? |
+| Outliers beyond 2σ within a cohort | Where are we inconsistent? |
+| Interactive filters across all of the above | Slice without exporting |
 
 ## Out of scope — and why
 
@@ -60,5 +63,5 @@ and (2) badly but adequately; they fail completely at (3).
 - Unit tests cover compensation calculation and currency normalisation with no DB dependency
 
 ## Success criteria
-Priya can answer any question in the analytics table above in under 30 seconds,
+Priya can answer any question in the dashboard table above in under 30 seconds,
 without opening Excel.

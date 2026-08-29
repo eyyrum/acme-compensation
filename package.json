@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build:shared": "pnpm --filter @acme/shared build",
+    "dev:shared": "pnpm --filter @acme/shared dev",
     "dev:api": "pnpm --filter api start:dev",
     "dev:web": "pnpm --filter web dev",
     "test": "pnpm -r test",
