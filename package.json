@@ -11,5 +11,7 @@
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down"
   },
-  "packageManager": "pnpm@10.12.2"
+  "packageManager": "pnpm@10.12.2",
+  "test": "pnpm -r test",
+  "test:int": "pnpm --filter api test:int"
 }
