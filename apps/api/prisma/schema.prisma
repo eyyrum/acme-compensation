@@ -6,3 +6,79 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+/// Reference table. Rate is expressed as: 1 unit of this currency = rateToUsd USD.
+/// A single current rate set, applied uniformly at query time — see ADR-004.
+model Currency {
+  code          String   @id @db.Char(3)
+  name          String   @db.VarChar(60)
+  /// Decimal places in the minor unit. 2 for USD, 0 for JPY. See ADR-002.
+  minorUnits    Int      @default(2) @map("minor_units")
+  rateToUsd     Decimal  @map("rate_to_usd") @db.Decimal(18, 8)
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  countries     Country[]
+  employees     Employee[]
+
+  @@map("currency")
+}
+
+model Country {
+  code         String   @id @db.Char(2)
+  name         String   @db.VarChar(80)
+  currencyCode String   @map("currency_code") @db.Char(3)
+
+  currency     Currency   @relation(fields: [currencyCode], references: [code])
+  employees    Employee[]
+
+  @@map("country")
+}
+
+model Department {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique @db.VarChar(80)
+
+  employees Employee[]
+
+  @@map("department")
+}
+
+model Employee {
+  id             Int            @id @default(autoincrement())
+  /// Human-facing identifier shown in the UI, e.g. ACME-004217.
+  employeeCode   String         @unique @map("employee_code") @db.VarChar(20)
+  firstName      String         @map("first_name") @db.VarChar(60)
+  lastName       String         @map("last_name") @db.VarChar(60)
+  email          String         @unique @db.VarChar(160)
+  jobTitle       String         @map("job_title") @db.VarChar(100)
+  status         EmployeeStatus @default(ACTIVE)
+  joinedOn       DateTime       @map("joined_on") @db.Date
+
+  departmentId   Int            @map("department_id")
+  countryCode    String         @map("country_code") @db.Char(2)
+
+  /// Current base salary in minor units of currencyCode. Integer, never float.
+  /// Current-only by ADR-005; history is a planned additive phase.
+  baseSalaryMinor BigInt        @map("base_salary_minor")
+  currencyCode    String        @map("currency_code") @db.Char(3)
+
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  department     Department     @relation(fields: [departmentId], references: [id])
+  country        Country        @relation(fields: [countryCode], references: [code])
+  currency       Currency       @relation(fields: [currencyCode], references: [code])
+
+  @@index([departmentId])
+  @@index([countryCode])
+  @@index([status])
+  @@index([lastName, firstName])
+  @@index([departmentId, status])
+  @@index([countryCode, status])
+  @@map("employee")
+}
