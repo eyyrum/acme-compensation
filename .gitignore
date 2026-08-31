@@ -37,3 +37,6 @@ coverage/
 # Turbo / Nest
 .turbo/
 *.tsbuildinfo
+
+# Next.js (auto-generated)
+next-env.d.ts
