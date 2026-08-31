@@ -8,10 +8,9 @@
     "dev:api": "pnpm --filter api start:dev",
     "dev:web": "pnpm --filter web dev",
     "test": "pnpm -r test",
+    "test:int": "pnpm --filter api test:int",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down"
   },
-  "packageManager": "pnpm@10.12.2",
-  "test": "pnpm -r test",
-  "test:int": "pnpm --filter api test:int"
+  "packageManager": "pnpm@10.12.2"
 }

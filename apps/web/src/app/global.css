@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #fafaf9;
+  --color-surface: #ffffff;
+  --color-border: #e7e5e4;
+  --color-ink: #1c1917;
+  --color-ink-muted: #78716c;
+  --color-accent: #1d4ed8;
+  --color-accent-soft: #eff6ff;
+  --color-positive: #15803d;
+  --color-negative: #b91c1c;
+  --color-warning: #b45309;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Salary figures align on the decimal when tabular. */
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
