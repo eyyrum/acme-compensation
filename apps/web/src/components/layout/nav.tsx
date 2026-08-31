@@ -12,10 +12,10 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-[--color-border] bg-[--color-surface]">
+    <header className="border-b border-[var(--color-border)] bg-[var(--color-surface)]">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-8 px-6">
         <Link href="/" className="text-sm font-semibold tracking-tight">
-          ACME <span className="text-[--color-ink-muted]">Compensation</span>
+          ACME <span className="text-[var(--color-ink-muted)]">Compensation</span>
         </Link>
 
         <nav className="flex gap-1">
@@ -31,8 +31,8 @@ export function Nav() {
                 aria-current={active ? 'page' : undefined}
                 className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
                   active
-                    ? 'bg-[--color-accent-soft] font-medium text-[--color-accent]'
-                    : 'text-[--color-ink-muted] hover:bg-stone-100'
+                    ? 'bg-[var(--color-accent-soft)] font-medium text-[var(--color-accent)]'
+                    : 'text-[var(--color-ink-muted)] hover:bg-stone-100'
                 }`}
               >
                 {link.label}
@@ -43,8 +43,8 @@ export function Nav() {
 
         {/* Single-persona brief: the session user is fixed, not authenticated.
             Shown so the audit story is honest rather than absent. */}
-        <div className="ml-auto text-xs text-[--color-ink-muted]">
-          Signed in as <span className="font-medium text-[--color-ink]">Priya Raman</span> · HR Manager
+        <div className="ml-auto text-xs text-[var(--color-ink-muted)]">
+          Signed in as <span className="font-medium text-[var(--color-ink)]">Priya Raman</span> · HR Manager
         </div>
       </div>
     </header>
