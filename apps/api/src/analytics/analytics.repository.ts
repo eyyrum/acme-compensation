@@ -153,7 +153,7 @@ export class AnalyticsRepository {
         FROM salaries
       ),
       binned AS (
-        SELECT width_bucket(s.usd, b.lo, b.hi, ${buckets}) AS bucket
+        SELECT width_bucket(s.usd, b.lo, b.hi, ${buckets}::int) AS bucket
         FROM salaries s CROSS JOIN bounds b
       )
       SELECT
@@ -207,15 +207,33 @@ export class AnalyticsRepository {
         ${AnalyticsRepository.FROM_EMPLOYEES}
         WHERE ${where}
       ),
+      cohort_stats AS (
+        -- percentile_cont is an ordered-set aggregate; Postgres does not
+        -- allow those as window functions (no OVER), so cohort stats are
+        -- computed by GROUP BY here and joined back onto every row below.
+        SELECT
+          department_id,
+          country_code,
+          job_title,
+          COUNT(*)                                                   AS cohort_size,
+          AVG(salary_usd)                                            AS cohort_mean,
+          STDDEV_POP(salary_usd)                                     AS cohort_stddev,
+          percentile_cont(0.5) WITHIN GROUP (ORDER BY salary_usd)     AS cohort_median
+        FROM scoped
+        GROUP BY department_id, country_code, job_title
+      ),
       cohorts AS (
         SELECT
           s.*,
-          COUNT(*)      OVER w AS cohort_size,
-          AVG(salary_usd) OVER w AS cohort_mean,
-          STDDEV_POP(salary_usd) OVER w AS cohort_stddev,
-          percentile_cont(0.5) WITHIN GROUP (ORDER BY salary_usd) OVER w AS cohort_median
+          cs.cohort_size,
+          cs.cohort_mean,
+          cs.cohort_stddev,
+          cs.cohort_median
         FROM scoped s
-        WINDOW w AS (PARTITION BY s.department_id, s.country_code, s.job_title)
+        JOIN cohort_stats cs
+          ON cs.department_id = s.department_id
+         AND cs.country_code = s.country_code
+         AND cs.job_title = s.job_title
       )
       SELECT
         id, employee_code, full_name, job_title, department, country,

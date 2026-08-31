@@ -45,21 +45,32 @@ export function EmployeeTable({
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-[var(--color-border)] text-left">
-            {COLUMNS.map((col) => (
-              <th
-                key={col.key}
-                scope="col"
-                className={`px-4 py-3 text-xs font-medium uppercase tracking-wide text-[var(--color-ink-muted)] ${
-                  col.align === 'right' ? 'text-right' : ''
-                }`}
-              >
-                {col.sortField ? (
-                  <SortLink field={col.sortField} label={col.label} query={query} />
-                ) : (
-                  col.label
-                )}
-              </th>
-            ))}
+            {COLUMNS.map((col) => {
+              const isActive = col.sortField && query.sortBy === col.sortField;
+
+              return (
+                <th
+                  key={col.key}
+                  scope="col"
+                  aria-sort={
+                    col.sortField
+                      ? isActive
+                        ? query.sortDir === 'asc' ? 'ascending' : 'descending'
+                        : 'none'
+                      : undefined
+                  }
+                  className={`px-4 py-3 text-xs font-medium uppercase tracking-wide text-[var(--color-ink-muted)] ${
+                    col.align === 'right' ? 'text-right' : ''
+                  }`}
+                >
+                  {col.sortField ? (
+                    <SortLink field={col.sortField} label={col.label} query={query} />
+                  ) : (
+                    col.label
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
 
@@ -118,7 +129,6 @@ function SortLink({
   return (
     <Link
       href={buildEmployeeHref({ ...query, sortBy: field, sortDir: nextDir, page: 1 })}
-      aria-sort={isActive ? (query.sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
       className={`inline-flex items-center gap-1 hover:text-[var(--color-ink)] ${
         isActive ? 'text-[var(--color-ink)]' : ''
       }`}
