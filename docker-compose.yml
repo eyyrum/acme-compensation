@@ -12,5 +12,32 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://acme:acme@postgres:5432/compensation?schema=public
+      PORT: 3001
+      CORS_ORIGIN: http://localhost:3000
+    ports: ['3001:3001']
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # All of this app's data fetching happens in Server Components, so
+        # this only needs to resolve from inside the web container's own
+        # network namespace — the compose service name, not "localhost"
+        # (which would refer to the web container itself).
+        NEXT_PUBLIC_API_URL: http://api:3001/api
+    ports: ['3000:3000']
+    depends_on:
+      api: { condition: service_healthy }
+
 volumes:
   pgdata:
